@@ -1,0 +1,54 @@
+import random
+
+class Player:
+    def __init__(self, name, max_health, armor):
+        self.name = name
+        self.max_health = max_health
+        self.health = max_health
+        self.armor = armor
+
+    def take_damage(self, damage):
+        actual_damage = max(0, damage - self.armor)
+        self.health -= actual_damage
+        if self.health <= 0:
+            print(f"{self.name} has been defeated!")
+        else:
+            print(f"{self.name} took {actual_damage} damage. Remaining health: {self.health}/{self.max_health}")
+
+class Enemy:
+    def __init__(self, name, max_health, attack):
+        self.name = name
+        self.max_health = max_health
+        self.health = max_health
+        self.attack = attack
+
+    def attack_player(self, player):
+        damage = random.randint(1, self.attack)
+        print(f"{self.name} attacks {player.name} for {damage} damage!")
+        player.take_damage(damage)
+
+def main():
+    player_name = input("Enter your name: ")
+    player_armor = int(input("Choose your armor value: ")) # Players can choose their armor value
+    player = Player(player_name, 100, player_armor)
+
+    enemy = Enemy("Goblin", 50, 10) # Example enemy
+
+    print("A wild Goblin appears!")
+
+    while player.health > 0 and enemy.health > 0:
+        action = input("Press 'A' to attack, 'D' to defend: ")
+        if action.upper() == 'A':
+            enemy.take_damage(random.randint(1, 20))
+            enemy.attack_player(player)
+        elif action.upper() == 'D':
+            player.armor += 5  # Increase armor temporarily when defending
+            enemy.attack_player(player)
+            player.armor -= 5  # Reset armor after defending
+        else:
+            print("Invalid action. Try again.")
+
+    print("Game over!")
+
+if __name__ == "__main__":
+    main()
